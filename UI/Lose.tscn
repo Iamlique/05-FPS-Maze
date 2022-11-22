@@ -15,7 +15,8 @@ color = Color( 0.14902, 0.0470588, 0.0470588, 1 )
 [node name="Label" type="Label" parent="."]
 margin_right = 1024.0
 margin_bottom = 300.0
-text = "The Zombie got you, you lose!"
+text = "The zombie tears into your flesh and you are never seen again!
+You Lose!"
 align = 1
 valign = 1
 
