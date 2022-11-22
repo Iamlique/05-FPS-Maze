@@ -1,0 +1,95 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Player/Player.gd" type="Script" id=1]
+[ext_resource path="res://Key/key.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Exit/Exit.gd" type="Script" id=3]
+[ext_resource path="res://UI/Menu.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Maze/Maze.gd" type="Script" id=5]
+[ext_resource path="res://Enemy/Enemy.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Assets/Electronic-Fantasy.mp3" type="AudioStream" id=7]
+[ext_resource path="res://Assets/Zombie_Snarl.wav" type="AudioStream" id=8]
+[ext_resource path="res://Assets/Coin.wav" type="AudioStream" id=9]
+
+[sub_resource type="SphereShape" id=6]
+radius = 0.5
+
+[sub_resource type="CapsuleShape" id=4]
+radius = 0.25
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 0.5, 0.1, 0.5 )
+
+[sub_resource type="PanoramaSky" id=8]
+
+[sub_resource type="Environment" id=7]
+background_mode = 4
+background_sky = SubResource( 8 )
+background_sky_custom_fov = 158.1
+background_energy = 0.0
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_energy = 2.21
+fog_enabled = true
+fog_sun_color = Color( 0.380392, 0.380392, 0.380392, 1 )
+
+[node name="Game" type="Spatial"]
+
+[node name="Maze" type="Spatial" parent="."]
+script = ExtResource( 5 )
+
+[node name="key" parent="Maze" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 15 )
+
+[node name="Exit" type="Area" parent="Maze"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 25 )
+script = ExtResource( 3 )
+
+[node name="Light" type="OmniLight" parent="Maze/Exit"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0 )
+light_color = Color( 1, 0, 0, 1 )
+light_energy = 16.0
+omni_range = 3.0
+omni_attenuation = 2.0
+
+[node name="CollisionShape" type="CollisionShape" parent="Maze/Exit"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0 )
+shape = SubResource( 6 )
+
+[node name="Player" type="KinematicBody" parent="."]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+script = ExtResource( 1 )
+
+[node name="Body" type="CollisionShape" parent="Player"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.92927, 0 )
+shape = SubResource( 4 )
+
+[node name="Feet" type="CollisionShape" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0 )
+shape = SubResource( 5 )
+
+[node name="Pivot" type="Spatial" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.44727, 0 )
+
+[node name="Camera" type="Camera" parent="Player/Pivot"]
+current = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Menu" parent="UI" instance=ExtResource( 4 )]
+
+[node name="Enemy" parent="." instance=ExtResource( 6 )]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 20, 0, 18 )
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+autoplay = true
+
+[node name="Key" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 9 )
+
+[node name="Zombie" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 7 )
+
+[connection signal="body_entered" from="Maze/Exit" to="Maze/Exit" method="_on_Exit_body_entered"]
